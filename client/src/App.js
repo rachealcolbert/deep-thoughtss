@@ -1,31 +1,41 @@
 import React from "react";
 
-const ThoughtList = ({ thoughts, title }) => {
-  if (!thoughts.length) {
-    return <h3>No Thoughts Yet</h3>;
-  }
+import { ApolloProvider } from "@apollo/react-hooks";
+import ApolloClient from "apollo-boost";
 
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+
+import Home from "./pages/Home";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import NoMatch from "./pages/NoMatch";
+import SingleThought from "./pages/SingleThought";
+import Profile from "./pages/Profile";
+import Signup from "./pages/Signup";
+
+const client = new ApolloClient({
+  uri: "/graphql",
+});
+
+function App() {
   return (
-    <div>
-      <h3>{title}</h3>
-      {thoughts &&
-        thoughts.map((thought) => (
-          <div key={thought._id} className="card mb-3">
-            <p className="card-header">
-              {thought.username}
-              thought on {thought.createdAt}
-            </p>
-            <div className="card-body">
-              <p>{thought.thoughtText}</p>
-              <p className="mb-0">
-                Reactions: {thought.reactionCount} || Click to{" "}
-                {thought.reactionCount ? "see" : "start"} the discussion!
-              </p>
-            </div>
+    <ApolloProvider client={client}>
+      <Router>
+        <div className="flex-column justify-flex-start min-100-vh">
+          <Header />
+          <div className="container">
+            <Route exact path="/" component={Home} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/signup" component={Signup} />
+            <Route exact path="/profile" component={Profile} />
+            <Route exact path="/thought" component={SingleThought} />
           </div>
-        ))}
-    </div>
+          <Footer />
+        </div>
+      </Router>
+    </ApolloProvider>
   );
-};
+}
 
-export default ThoughtList;
+export default App;
